@@ -1,0 +1,55 @@
+.base-button{
+    height: 44px;
+    padding: 0px 20px;
+    border-radius: 8px;
+    background-color:#00A557;
+    font-size: 13px;
+    font-weight: bold;
+    border: 0px;
+    color: white;
+    text-align: center;
+    }
+    .base-button .form-control {
+        text-align: center !important;
+    }
+    .text-center{
+        text-align: center !important;  
+    }
+    .blackText{
+    color: black !important;
+    }
+    .base-button-white{
+        height: 44px;
+        padding: 0px 20px;
+        border-radius: 8px;
+        background-color: white;
+        font-size: 13px;
+        font-weight: bold;
+        border: solid 1px #9d9d9d;
+        margin: 0px 5px;
+        }
+               
+        .filter-button-white{
+            height: 44px;
+            padding: 0px 10px;
+            width: 90px;
+            border-radius: 8px;
+            background-color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border: solid 1px #9d9d9d;
+            margin: 0px 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            }  
+    .light-yellow-button{
+        height: Hug (44px);
+        padding: 12px, 24px, 12px, 24px;
+        border-radius: 8px;
+        background-color:rgba(253, 242, 208, 1);
+        font-size: 14px;
+        font-weight: bold;
+        color:rgba(248, 176, 43, 1);
+    }
