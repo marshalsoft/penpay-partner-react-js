@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CONSTANTS, DashboardNavItems } from '../../includes/constant';
-import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Link, Navigate, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Logo } from '../../components/logo';
 export const DashboardScreen = () => {
+    const [searchParams,setSearchParams] = useSearchParams();
+    const navigate = useNavigate()
+    useEffect(()=>{
+const params = searchParams.get("logout");
+if(params)
+{
+   localStorage.clear();
+   navigate("/login")
+}
+    },[searchParams])
     if(!localStorage.getItem(CONSTANTS.Routes.Login))
   {
   return <Navigate to={"/"+CONSTANTS.Routes.Login} />
@@ -18,7 +28,7 @@ export const DashboardScreen = () => {
                     {DashboardNavItems.map((a,i)=><li key={i} className="nav-item">
                         <Link to={a.link} className="nav-link align-middle py-3 ">
                             {a.icon}
-                             <span className="ms-1 d-none d-sm-inline text-white">{a.title}</span>
+                             <span className={`ms-1 d-none d-sm-inline text-white ${a.title}`}>{a.title}</span>
                         </Link>
                     </li>)}
                 </ul>

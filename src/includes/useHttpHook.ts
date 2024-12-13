@@ -70,7 +70,7 @@ const useHttpHook = () => {
     const handleSignUp = (prop: UserProps) => {
         return new Promise<APIResponse>((resolve) => {
             setLoading(true);
-            PostRequest("register", prop, true).then((res) => {
+            PostRequest("partner-register", prop, true).then((res) => {
                 setLoading(false);
                 resolve(res);
             })

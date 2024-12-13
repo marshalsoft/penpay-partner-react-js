@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import BaseInput from '../../components/baseInput'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { CONSTANTS } from '../../includes/constant'
+import { CONSTANTS, Validation } from '../../includes/constant'
 import { BaseButton } from '../../components/buttons'
 import { Formik} from 'formik';
 import * as y from 'yup';
@@ -12,23 +12,17 @@ import BaseCheckBox from '../../components/baseCheckBox'
 import BaseSelect from '../../components/baseSelect'
 import useHttpHook from '../../includes/useHttpHook'
 
-const schema = y.object({
-    firstName:y.string().required(),
-    lastName:y.string().required(),
-    password:y.string().required(),
-    email:y.string().required().email("A valid email is required."),
-    phoneNumber:y.string().required()
-    })
   export default function RegisterScreen() {
-    const {loading,handleSignUp,handleGetProviders} = useHttpHook();
+    const {handleSignUp,handleGetProviders} = useHttpHook();
     const [providers,setProviders] = useState<ItemProps[]>([])
+    const [fetching,setFetching] = useState<boolean>(false);
     const [formData,setFormData] = useState<UserProps>({
       email:"",
       password:"",
       firstName:"",
       lastName:"",
       phoneNumber:"",
-      accountType:"PFA",
+      accountType:"PFC",
       providerName:""
     });
     const handleChange =(prop:FieldChangePayload)=>{
@@ -41,8 +35,14 @@ const schema = y.object({
       }
       const navigate = useNavigate()
       const UserRegistration = (e:FormEvent)=>{
-      e.preventDefault()
+      e.preventDefault();
+      setFetching(true);
+      if(formData.providerName === "")
+      {
+        formData.providerName =  formData.accountType; 
+      }
       handleSignUp(formData).then((response)=>{
+        setFetching(false);
         if(response.status)
         {
          navigate("/"+CONSTANTS.Routes.Login,{replace:true});
@@ -93,15 +93,15 @@ const schema = y.object({
            value={formData.lastName}
           required={true}
           />
-           <BaseInput 
+          <BaseInput 
           name='phoneNumber'
           type='mobile'
           placeholder='Enter your phone number'
-          max={15}
+          max={11}
           onValueChange={handleChange}  
           value={formData.phoneNumber}
           required={true}
-          pattern='[0-9]{3}'
+          pattern={Validation.PHONE_NUMBER_REGEX}
           />
           <BaseInput 
           name='email'
@@ -116,9 +116,11 @@ const schema = y.object({
           name='password'
           type='password'
           placeholder='Password'
-          max={50}
+          min={8}
+          max={30}
           onValueChange={handleChange}  
-          value={formData.password}
+          value={String(formData.password).replace(/[ ]/g,'')}
+          pattern={Validation.PASSWORD_REGEX}
           required
           />
           
@@ -126,10 +128,10 @@ const schema = y.object({
           <div className='col-6'>
           <div className='alert alert-success'>
             <BaseCheckBox
-            value={formData.accountType === "PFA"}
-            title='PFA Account'
+            value={formData.accountType === "PFC"}
+            title='PFC Account'
             onValueChange={(value)=>{
-                handleChange({field:"accountType",value:value?"PFA":"PFC"})
+                handleChange({field:"accountType",value:"PFC"})
             }}
             />
           </div>
@@ -137,16 +139,16 @@ const schema = y.object({
           <div className='col-6'>
           <div className='alert alert-success'>
             <BaseCheckBox
-            value={formData.accountType === "PFC"}
-            title='PFC Account'
+            value={formData.accountType === "PFA"}
+            title='PFA Account'
             onValueChange={(value)=>{
-                handleChange({field:"accountType",value:value?"PFC":"PFA"})
+                handleChange({field:"accountType",value:"PFA"})
             }}
             />
           </div>
           </div>
           </div>
-          {formData.accountType === "PFA"?<BaseSelect 
+          {formData.accountType === "PFC"?<BaseSelect 
           required
           list={providers}
           onValueChange={({id,name,value})=>{
@@ -156,7 +158,7 @@ const schema = y.object({
           <div className='row p-2 pe-3 mb-3 mt-4' >
           <BaseButton 
           type='submit'
-          loading={loading}
+          loading={fetching}
           >Register</BaseButton>
           </div>
           <NavLink to={"../"+CONSTANTS.Routes.Login} 

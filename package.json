@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.0.0",
     "axios": "^1.6.7",
     "formik": "^2.4.6",
+    "moment": "^2.30.1",
     "react": "^18.3.1",
     "react-calendar": "^4.8.0",
     "react-calendars": "^1.0.9",

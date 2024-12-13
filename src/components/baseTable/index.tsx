@@ -36,10 +36,11 @@ const BaseTable = (props:BaseTableProps)=>{
     </tr>
   </thead>
   <tbody>
-   {props.rows?.map((a,i)=><tr key={i}>
+   {props.rows?.map((a,i)=>{
+    return <tr key={i}>
       <th scope="row">{i+1}</th>
       {a.map((a:string,i:number)=><td key={i}>{a}</td>)}
-    </tr>)}
+    </tr>})}
   </tbody>
 </table>
 <div className="d-flex justify-content-end">
