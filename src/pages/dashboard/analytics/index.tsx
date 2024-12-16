@@ -255,7 +255,11 @@ const GetComments = ()=>{
     if(res.status)
     {
       try {
+        const found = Object.keys(res.data.list);
+        if(found.includes(id))
+        {
         setList(res.data.list[id]);
+        }
       } catch (error) {
         
       }
