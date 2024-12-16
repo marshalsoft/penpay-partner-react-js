@@ -254,7 +254,11 @@ const GetComments = ()=>{
   PostRequest("get:partner-get-comments",{}).then((res)=>{
     if(res.status)
     {
-      setList(res.data.list[id]);
+      try {
+        setList(res.data.list[id]);
+      } catch (error) {
+        
+      }
     }
   })
 }
