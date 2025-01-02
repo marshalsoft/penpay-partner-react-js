@@ -10,6 +10,7 @@ import ForgotPasswordScreen from './pages/forgotPassword';
 import DashboardScreen from './pages/dashboard';
 import DashboardAnalyticsScreen from './pages/dashboard/analytics';
 import DashboardTransactionsScreen from './pages/dashboard/transactions';
+import DashboardProfileScreen from './pages/dashboard/profile';
 function App() {
   return (<BrowserRouter>
     <Routes>
@@ -18,8 +19,8 @@ function App() {
     errorElement={<DashboardAnalyticsScreen />}
     >
     {/* <Route path={CONSTANTS.Routes.History} element={<TransactionHistoryScreen />} />
-    <Route path={CONSTANTS.Routes.Profile} element={<ProfileScreen />} />
     <Route path={CONSTANTS.Routes.Subscriptions} element={<SubscriptionScreen />} /> />*/}
+    <Route path={CONSTANTS.Routes.Profile} element={<DashboardProfileScreen />} />
     <Route path={CONSTANTS.Routes.History} element={<DashboardTransactionsScreen />}  /> 
     <Route path={""} element={<DashboardAnalyticsScreen />} />
     <Route path={"*"} element={<DashboardAnalyticsScreen />} /> 

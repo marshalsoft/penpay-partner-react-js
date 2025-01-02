@@ -289,7 +289,9 @@ const handleDelete = (id:string)=>{
     setSelectedId("");
     if(res.status)
     {
-      GetComments();
+      // GetComments();
+      setList(list.filter((a,i)=>a.id !== id))
+
     }
   })
 }

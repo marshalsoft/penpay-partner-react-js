@@ -148,7 +148,7 @@ import useHttpHook from '../../includes/useHttpHook'
           </div>
           </div>
           </div>
-          {formData.accountType === "PFC"?<BaseSelect 
+          {formData.accountType === "PFA"?<BaseSelect 
           required
           list={providers}
           onValueChange={({id,name,value})=>{
