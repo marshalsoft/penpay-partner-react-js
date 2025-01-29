@@ -3,9 +3,6 @@ import BaseInput from '../../components/baseInput'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { CONSTANTS, Validation } from '../../includes/constant'
 import { BaseButton } from '../../components/buttons'
-import { Formik} from 'formik';
-import * as y from 'yup';
-import { PostRequest } from '../../includes/functions';
 import { Logo } from '../../components/logo'
 import { FieldChangePayload, ItemProps, UserProps } from '../../includes/types'
 import BaseCheckBox from '../../components/baseCheckBox'
@@ -14,6 +11,8 @@ import useHttpHook from '../../includes/useHttpHook'
 
   export default function RegisterScreen() {
     const {handleSignUp,handleGetProviders} = useHttpHook();
+    const [providerNamePFC,setProviderNamePFC] = useState<string>("");
+    const [providerNamePFA,setProviderNamePFA] = useState<string>("");
     const [providers,setProviders] = useState<ItemProps[]>([])
     const [fetching,setFetching] = useState<boolean>(false);
     const [formData,setFormData] = useState<UserProps>({
@@ -25,6 +24,11 @@ import useHttpHook from '../../includes/useHttpHook'
       accountType:"PFC",
       providerName:""
     });
+    const pfcList = [
+      {id:"1",name:"First Pension Custodian Nigeria.",value:"FPCN"},
+      {id:"2",name:"UBA Pensions Custodian Ltd.",value:"UPCL"},
+      {id:"3",name:"Zenith Pensions Custodian Ltd.",value:"ZPCL"}
+    ]
     const handleChange =(prop:FieldChangePayload)=>{
         const { field,value} = prop;
         setFormData({
@@ -41,6 +45,7 @@ import useHttpHook from '../../includes/useHttpHook'
       {
         formData.providerName =  formData.accountType; 
       }
+      
       handleSignUp(formData).then((response)=>{
         setFetching(false);
         if(response.status)
@@ -59,9 +64,22 @@ import useHttpHook from '../../includes/useHttpHook'
                         value:a.id
                     }
                 }))
+                setProviderNamePFA(res.data.providers[0].name);
             }
         });
     },[])
+    useEffect(()=>{
+      setProviderNamePFC(pfcList[0].name);
+    },[providers])
+      useEffect(()=>{
+          handleChange({field:"providerName",value:formData.accountType === "PFC"?providerNamePFC:providerNamePFA})
+      },[formData.accountType])
+ useEffect(()=>{
+        handleChange({field:"providerName",value:providerNamePFC})
+ },[providerNamePFC])   
+    useEffect(()=>{
+      handleChange({field:"providerName",value:providerNamePFA})
+  },[providerNamePFA]) 
     return (<div className='container text-center pt-5'>
       <div >
         <Logo />
@@ -123,19 +141,7 @@ import useHttpHook from '../../includes/useHttpHook'
           pattern={Validation.PASSWORD_REGEX}
           required
           />
-          
           <div className='row'>
-          <div className='col-6'>
-          <div className='alert alert-success'>
-            <BaseCheckBox
-            value={formData.accountType === "PFC"}
-            title='PFC Account'
-            onValueChange={(value)=>{
-                handleChange({field:"accountType",value:"PFC"})
-            }}
-            />
-          </div>
-          </div>
           <div className='col-6'>
           <div className='alert alert-success'>
             <BaseCheckBox
@@ -147,14 +153,32 @@ import useHttpHook from '../../includes/useHttpHook'
             />
           </div>
           </div>
+          <div className='col-6'>
+          <div className='alert alert-success'>
+            <BaseCheckBox
+            value={formData.accountType === "PFC"}
+            title='PFC Account'
+            onValueChange={(value)=>{
+                handleChange({field:"accountType",value:"PFC"})
+            }}
+            />
           </div>
-          {formData.accountType === "PFA"?<BaseSelect 
+          </div>
+          
+          </div>
+          {formData.accountType === "PFA"?<BaseSelect
           required
           list={providers}
           onValueChange={({id,name,value})=>{
-            handleChange({field:"providerName",value:name});
+            setProviderNamePFA(name);
           }}
-          />:null}
+          />:<BaseSelect 
+          required
+          list={pfcList}
+          onValueChange={({id,name,value})=>{
+            setProviderNamePFC(name);
+            }}
+          />}
           <div className='row p-2 pe-3 mb-3 mt-4' >
           <BaseButton 
           type='submit'

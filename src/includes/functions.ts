@@ -1,8 +1,11 @@
 /* eslint-disable no-useless-escape */
-
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 import { toast} from 'react-toastify';
 import { CONSTANTS } from './constant';
 import axios,{ AxiosRequestConfig, AxiosResponse} from 'axios';
+import { TransactionHistoryProps } from "../pages/dashboard/analytics";
+import { EmployeesProp } from "./types";
 export interface APIResponse {
     status:boolean;
     data?:any;
@@ -144,3 +147,13 @@ export function ReturnComma(str: string) {
   return firstPart;
 }
   
+
+export const ExportXSLSFile = (list:EmployeesProp[],fileName:string = "excelfile")=>{
+    const fileExtension = ".xlsx"
+    const filetype = "application/vnd.openxmlformats-officedocumnet.spreadsheetml.sheet;charset-UTF-8";
+    const ws = XLSX.utils.json_to_sheet(list);
+    const wb = {Sheets:{data:ws},SheetNames:["data"]};
+    const excelBuffer =XLSX.write(wb,{bookType:"xlsx",type:"array"});
+    const data = new Blob([excelBuffer],{type:filetype});
+    return FileSaver.saveAs(data,fileName+fileExtension)
+}

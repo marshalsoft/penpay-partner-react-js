@@ -73,3 +73,7 @@ export const Validation = {
   MINIMUM_AMOUNT:`^[0-9]{3,}$`,
   LOGIN_PHONE_REGEX: '^[0-9]{11}$',
 }
+export const Currency ={
+  symbol:"₦",
+  code: "NGN"
+}

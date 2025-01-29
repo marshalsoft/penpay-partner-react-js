@@ -10,21 +10,11 @@ import { ItemProps } from "../../includes/types";
  const BaseSelect = (props:BaseSelectProps)=>{
 const [selected,setSelected] = useState<string | null>("");
 const [list,setList] = useState<ItemProps[]>([]);
+
 useEffect(()=>{
-    if(selected !== "" && props.placeholder)
-    {
-    setList(list.filter((a,i)=>a.name !== props.placeholder));
-    }else{
-    setList(list.filter((a,i)=>a.name !== "Select an option"));
-    }
-},[selected])
-useEffect(()=>{
-setList([{
-    value: "",
-    name: `${props.placeholder ? props.placeholder : "Select an option"}`,
-    id: ""
-    },...props.list])
+setList(props.list)
 },[props.list])
+
 return <select 
 required={props.required}
 onChange={({target})=>{
@@ -36,8 +26,12 @@ onChange={({target})=>{
     }
 }}
 className="form-select" aria-label="Select an option">
+<option 
+disabled
+>{props.placeholder?props.placeholder:"Select an option"}</option>
 {list.map((a,i)=><option 
-selected={selected === a.value} key={i} value={a.value} >{a.name}</option>)}
+selected={selected === a.name} 
+key={i} value={a.value} >{a.name}</option>)}
 </select>
 }
 export default BaseSelect;
