@@ -44,6 +44,7 @@ export const DashboardAnalyticsScreen = () => {
   
   const[search,setSearch] = useState<string>("");
   const[selectedTransactions,setSelectedTransactions] = useState<TransactionHistoryProps | null>(null);
+  const[selectedTransactionList,setSelectedTransactionList] = useState<TransactionHistoryProps[]>([]);
   const[transactions,setTransactions] = useState<TransactionHistoryProps[]>([]);
   const[selectedSection,setSelectedSection] = useState<"comment"|"details">("details");
   const[stats,setStats] = useState<StatsProps>({
@@ -74,7 +75,13 @@ export const DashboardAnalyticsScreen = () => {
   }
 const handleDownload = ()=>{
   setDownloading(true);
-  ExportXSLSFile(selectedTransactions?.employees!,`${selectedTransactions?.monthOfContribution}-${selectedTransactions?.yearOfContribution}-Schedule`)
+  const all:EmployeesProp[] = [];
+selectedTransactionList.forEach((ob)=>{
+ob.employees?.forEach((emp)=>{
+  all.push(emp);
+})
+})
+  ExportXSLSFile(all,`selected-Schedule`)
   setTimeout(()=>{
   setDownloading(false);
 },500)
@@ -126,8 +133,14 @@ const handleDownload = ()=>{
   value={search}
   onChange={({target})=>{
     setSearch(target.value)
+    setSelectedTransactionList([])
   }}
-  />  
+  /> 
+   {selectedTransactionList.length !== 0 &&<button 
+        onClick={handleDownload}
+        className='btn btn-outline-success d-flex gap-2'>
+          <DownloadIcon color='green' /> <span>Download({selectedTransactionList.length})</span>
+        </button>}
  {/* <div className="dropdown">
   <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
     Filter
@@ -172,13 +185,19 @@ const handleDownload = ()=>{
         className='btn btn-success'>Details / Comments</button>
       </td>
       <td >
-        <button 
-        onClick={()=>{
-          ExportXSLSFile(a.employees!,`${a.monthOfContribution}-${a.yearOfContribution}-schedule`)
-        }}
-        className='btn btn-outline-success'>
-          <DownloadIcon color='green' />
-        </button>
+      <input 
+                className="form-check-input" type="checkbox" 
+                value="" 
+                onChange={({target})=>{
+                  const selectedList = selectedTransactionList.find((b,i)=>b.id === a.id)
+                  if(selectedList)
+                  {
+                    setSelectedTransactionList(selectedTransactionList.filter((b,i)=>b.id !== a.id))
+                  }else{
+                    setSelectedTransactionList([...selectedTransactionList,a]);
+                  }
+                }}
+                id={`${i}`} />
       </td>
     </tr>
     
