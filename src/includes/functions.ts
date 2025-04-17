@@ -4,8 +4,6 @@ import * as XLSX from "xlsx";
 import { toast} from 'react-toastify';
 import { CONSTANTS } from './constant';
 import axios,{ AxiosRequestConfig, AxiosResponse} from 'axios';
-import { TransactionHistoryProps } from "../pages/dashboard/analytics";
-import { EmployeesProp } from "./types";
 export interface APIResponse {
     status:boolean;
     data?:any;
@@ -24,11 +22,10 @@ export const PostRequest = (uri:string,data:any,success?:boolean,center?:boolean
     getMethod = String(uri).split(":")[0];
     uri = String(uri).split(":")[1];
   }
- const token = localStorage.getItem(CONSTANTS.Routes.Login);
+ const token = localStorage.getItem(CONSTANTS.LOCALSTORAGE.token);
   const RequestHeaders:any = {
   "Content-Type":fileType === "json"?"application/json":"multipart/form-data",
   "Accept":"application/json",
-  "Access-Control-Allow-Origin":"*",
    "Authorization":`Bearer ${token}`
   }
   const options:AxiosRequestConfig = {
@@ -54,9 +51,8 @@ if(data.status)
   try {
       if(data.data.accessToken)
       {
-        localStorage.setItem(CONSTANTS.Routes.Login,data.data.accessToken);
+        localStorage.setItem(CONSTANTS.LOCALSTORAGE.token,data.data.accessToken);
       }  
-
   } catch (error) {
       
   }
@@ -148,7 +144,7 @@ export function ReturnComma(str: string) {
 }
   
 
-export const ExportXSLSFile = (list:EmployeesProp[],fileName:string = "excelfile")=>{
+export const ExportXSLSFile = (list:any[],fileName:string = "excelfile")=>{
     const fileExtension = ".xlsx"
     const filetype = "application/vnd.openxmlformats-officedocumnet.spreadsheetml.sheet;charset-UTF-8";
     const ws = XLSX.utils.json_to_sheet(list);

@@ -1,20 +1,17 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import BreadCrumb from '../../../components/breadcrumb';
-import { CONSTANTS, Currency } from '../../../includes/constant';
-import StatsCard from '../../../components/statsCard';
-import BaseTable from '../../../components/baseTable';
 import { ExportXSLSFile, PostRequest } from '../../../includes/functions';
-import { object } from 'yup';
 import moment from 'moment';
 import BaseModal from '../../../components/baseModal';
 import { BaseButton } from '../../../components/buttons';
-interface StatsProps {
+import { BasePagination } from '../../../components/basePagination';
+export interface StatsProps {
   totalUsers?:number;
   totalSchedule?:number;
   totalAmount?:number;
   list?:any[];
 }
-interface EmployeesProp {
+export interface EmployeesProp {
   staffId?:string;
   rsaPin?:string;
   name?:string;
@@ -24,6 +21,7 @@ interface EmployeesProp {
   employerVoluntaryContribution?:string;
   providerCode?:string;
   providerName?:string;
+  fullName?:string;
 }
 export interface TransactionHistoryProps {
   id?:string;
@@ -32,16 +30,24 @@ export interface TransactionHistoryProps {
   yearOfContribution?:string;
   createdAt?:string;
   employees?:EmployeesProp[];
+  name?:string;
+  staffId?:string;
+  rsaPin?:string;
+  employeeContribution?:string;
+  employerContribution?:string;
+  employeeVoluntaryContribution?:string;
+  employerVoluntaryContribution	?:string;
+  providerName?:string;
+  employerCode?:string;
+  fullName?:string;
+  listOfPFAs?:string[]
+  refNo?:string;
 }
-interface CommentProps {
-  id:string;
-  content:string;
-  createdAt:string;
-}
-export const DashboardAnalyticsScreen = () => {
+
+export const MicroPensionScreen = () => {
+  const[page,setPage] = useState<number>(1);
   const[loading,setLoading] = useState<boolean>(true);
   const[downloading,setDownloading] = useState<boolean>(false);
-  
   const[search,setSearch] = useState<string>("");
   const[selectedTransactions,setSelectedTransactions] = useState<TransactionHistoryProps | null>(null);
   const[selectedTransactionList,setSelectedTransactionList] = useState<TransactionHistoryProps[]>([]);
@@ -54,41 +60,50 @@ export const DashboardAnalyticsScreen = () => {
     list:[]
   });
 
-  const GetStatics = ()=>{
-    setLoading(true);
-    PostRequest("get:partner-get-statistic",{}).then((res)=>{
-      if(res.status)
-      {
-        setStats(res.data);
-      }
-    })
-  }
   const GetTransactions = ()=>{
     setLoading(true);
-    PostRequest("get:partner-get-transactions",{}).then((res)=>{
+    PostRequest(`get:partner-get-micro-transactions`,{}).then((res)=>{
       setLoading(false);
       if(res.status)
         {
-          setTransactions(res.data);
+          setTransactions(res.data.list);
+        }
+    })
+  }
+  
+  const GetSearch = (query:string)=>{
+    setLoading(true);
+    PostRequest(`get:partner-get-micro-transaction-by-word?query=${query}`,{}).then((res)=>{
+      setLoading(false);
+      if(res.status)
+        {
+          setTransactions(res.data.list);
+        }else{
+          setTransactions([]);
         }
     })
   }
 const handleDownload = ()=>{
-  setDownloading(true);
-  const all:EmployeesProp[] = [];
-selectedTransactionList.forEach((ob)=>{
-ob.employees?.forEach((emp)=>{
-  all.push(emp);
+setDownloading(true);
+const all:any[] = [];
+transactions.forEach((ob:any,index:number)=>{
+  all.push({
+    id:index+1,
+    FullName:ob.fullName,
+    RSAPin:ob.rsaPIN,
+    Amount:`N${ob.amount}`,
+    ProviderName:ob.providerName,
+    CreatedAt:ob.createdAt
+  });
 })
-})
-  ExportXSLSFile(all,`selected-Schedule`)
+  ExportXSLSFile(all,`penpay-micro-pensions`)
   setTimeout(()=>{
   setDownloading(false);
 },500)
 }
  
   useEffect(()=>{
-    GetStatics();
+    // GetStatics();
     GetTransactions();
   },[])
  
@@ -96,95 +111,68 @@ ob.employees?.forEach((emp)=>{
     <div className='p-3'>
       <BreadCrumb 
       home={{name:"Dashboard",route:"/dashboard"}}
-      currenPage='Analytics'
+      currenPage='Micro Pensions'
       />
-      <div className='row mb-3' >
-      <div className='col-4' >
-        <StatsCard 
-        iconType='users'
-        title='Total beneficiaries'
-        total={String(stats.totalUsers)}
-        />
-        </div>  
-        <div className='col-4' >
-        <StatsCard 
-        iconType='transaction'
-         title='Total schedule'
-        total={String(stats.totalSchedule)}
-        />
-        </div> 
-        <div className='col-4' >
-        <StatsCard 
-        iconType='income'
-         title='Total Amount'
-        total={String(stats.totalAmount)}
-        />
-        </div> 
-      </div>
+      <h4>Micro Pensions</h4>
      <div 
     className="card p-3"
     >
-<div className="row">
-    <div className="col-6"></div>
-    <div className="col-6 d-flex justify-content-end gap-2">
+   <div className='row' >
+  <div className="col-8 ">
   <input
   className="form-control"
   placeholder="Search..."
   value={search}
   onChange={({target})=>{
     setSearch(target.value)
-    setSelectedTransactionList([])
+    GetSearch(target.value)
   }}
   /> 
-   {selectedTransactionList.length !== 0 &&<button 
+  </div>
+  <div className="d-flex justify-content-end align-items-center col-4">
+   {transactions.length !== 0 &&<button 
         onClick={handleDownload}
+        style={{width:280}}
         className='btn btn-outline-success d-flex gap-2'>
-          <DownloadIcon color='green' /> <span>Download({selectedTransactionList.length})</span>
-        </button>}
- {/* <div className="dropdown">
-  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-    Filter
-  </button>
-  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    <li><a className="dropdown-item" href="#">Action</a></li>
-    <li><a className="dropdown-item" href="#">Another action</a></li>
-    <li><a className="dropdown-item" href="#">Something else here</a></li>
-  </ul>
-</div> */}
+          <DownloadIcon color='green' /> <span>Download Excel file</span>
+   </button>}
 </div>
 </div>
-<table className="table">
+{transactions.length !== 0?<div >
+  <BasePagination 
+  onNext={(page)=>{}}
+  onPrevious={(page)=>{}}
+  />
+  <table className="table">
   <thead>
     <tr >
     {[
         "#",
-        "Months",
+        "FullName",
         "Amount",
-        "Year",
-        "nomber of beneficiares",
+        "Provider Name",
+        "Ref. No.",
         "Date",
-        "Action",
-        "",
       ].map((a,i)=><th scope="col" key={i}>{a}</th>)}
 
     </tr>
   </thead>
   <tbody>
-  {transactions.filter((a,i)=>String(a.monthOfContribution).toLocaleUpperCase()?.includes(String(search).toLocaleUpperCase()) || String(a.yearOfContribution).toLocaleUpperCase()?.includes(String(search).toLocaleUpperCase()) || String(a.amount).toLocaleUpperCase()?.includes(String(search).toLocaleUpperCase())).map((a:TransactionHistoryProps,i:number)=><tr key={i}>
+  {transactions.map((a:TransactionHistoryProps,i:number)=><tr key={i}>
       <th >{i+1}</th>
-      <td >{a.monthOfContribution}</td>
-      <td >{Currency.symbol}{a.amount}</td>
-      <td >{a.yearOfContribution}</td>
-      <td >{a.employees?.length}</td>
-      <td >{moment(a.createdAt).format("Do,MMM YYYY")}</td>
+      <td >{a.fullName}</td>
+      <td >N{a.amount}</td>
+      <td >{a.providerName}</td>
+      <td >{a.refNo}</td>
+      <td >{moment(a.createdAt).format("Do MMM, YYYY")}</td>
       <td >
-        <button 
+        {/* <button 
         onClick={()=>{
           setSelectedTransactions(a);
         }}
-        className='btn btn-success'>Details / Comments</button>
+        className='btn btn-success'>Comments</button> */}
       </td>
-      <td >
+      {/* <td >
       <input 
                 className="form-check-input" type="checkbox" 
                 value="" 
@@ -198,31 +186,24 @@ ob.employees?.forEach((emp)=>{
                   }
                 }}
                 id={`${i}`} />
-      </td>
+      </td> */}
     </tr>
     
     )}
   </tbody>
 </table>
-<div className="d-flex justify-content-end">
-<nav aria-label="Page navigation example">
-  <ul className="pagination">
-    <li className="page-item">
-      <a className="page-link" href="#" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-    <li className="page-item"><a className="page-link" href="#">1</a></li>
-    <li className="page-item"><a className="page-link" href="#">2</a></li>
-    <li className="page-item"><a className="page-link" href="#">3</a></li>
-    <li className="page-item">
-      <a className="page-link" href="#" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-</nav>
+<BasePagination 
+  onNext={(page)=>{}}
+  onPrevious={(page)=>{}}
+  />
 </div>
+:<div >
+  <div style={{height:400}} className='d-flex justify-content-center align-items-center card mt-3'>
+
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-database-icon lucide-database"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+  <div >No data found!</div>
+  </div>
+  </div>}
     </div>
     {selectedTransactions !== null?<BaseModal 
     onClose={()=>setSelectedTransactions(null)}
@@ -280,16 +261,17 @@ ob.employees?.forEach((emp)=>{
     </div>
   )
 }
-interface CommentProps {
+export interface CommentProps {
   id:string;
   comment:string;
   scheduleId:string;
   email:string;
   read:string;
   createdAt:string;
+  content?:string;
 }
-export default DashboardAnalyticsScreen;
-const ListOfComments = ({id,onclose}:{id:string;onclose:()=>void})=>{
+export default MicroPensionScreen;
+export const ListOfComments = ({id,onclose}:{id:string;onclose:()=>void})=>{
 const [list,setList] = useState<CommentProps[]>([]);
 const[loading,setLoading] = useState<boolean>(false);
 const[comment,setComment] = useState<string>("");

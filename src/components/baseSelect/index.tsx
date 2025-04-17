@@ -30,7 +30,7 @@ className="form-select" aria-label="Select an option">
 disabled
 >{props.placeholder?props.placeholder:"Select an option"}</option>
 {list.map((a,i)=><option 
-selected={selected === a.name} 
+selected={selected === a.value} 
 key={i} value={a.value} >{a.name}</option>)}
 </select>
 }

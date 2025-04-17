@@ -26,6 +26,7 @@ export default function ForgotPasswordScreen() {
     e.preventDefault()
     setLoading(true);
     handleForgotPassword(formData.email!).then((response)=>{
+      setLoading(false);
       if(response.status)
       {
        navigate("/"+CONSTANTS.Routes.Dashboard);

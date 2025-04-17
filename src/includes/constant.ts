@@ -1,14 +1,15 @@
 export const GetDevEnvironment = ()=>{
-  return String(window.location.hostname).includes("localhost")
+  return "https://prod.penpay.com.ng/v1/"// String(window.location.hostname).includes("localhost")?"http://localhost/penpay-api/v1/":String(window.location.hostname).includes("test")?"https://test.penpay.com.ng/v1/":"https://prod.penpay.com.ng/v1/"
 }
 export const CONSTANTS = {
-    BaseURL:GetDevEnvironment()?"http://localhost/penpay-api/v1/":"https://test.penpay.com.ng/v1/",
+    BaseURL:GetDevEnvironment(),
     Routes:{
       Login:"login",
       Otp:"otp",
       ForgotPassword:"forgot_password",
       Dashboard:"dashboard",
       Home:"dashboard/",
+      Mandatory:"mandatory",
       History:"schedules",
       CreatePassword:"create_password",
       Settings:"settings",
@@ -21,6 +22,9 @@ export const CONSTANTS = {
       reloadBusiness:"reloadBusiness",
       reloadAllBusiness:"reloadAllBusiness",
       reloadVehicles:"reloadVehicles"
+    },
+    LOCALSTORAGE:{
+      token:"partner-token"
     }
 }
 
@@ -31,7 +35,8 @@ link:string;
 }
 
 export const DashboardNavItems:ListProps[] = [
-  {title:"Dashboard",link:"/"+CONSTANTS.Routes.Dashboard},
+  {title:"Micro Pensions",link:"/"+CONSTANTS.Routes.Dashboard},
+  {title:"Mandatory Pensions",link:"/"+CONSTANTS.Routes.Dashboard+"/"+CONSTANTS.Routes.Mandatory},
   {title:"Profile",link:"/"+CONSTANTS.Routes.Dashboard+"/"+CONSTANTS.Routes.Profile},
   {title:"Logout",link:"/"+CONSTANTS.Routes.Dashboard+"/?logout=true"},
 ] 

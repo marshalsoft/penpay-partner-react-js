@@ -8,9 +8,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import RegisterScreen from './pages/register';
 import ForgotPasswordScreen from './pages/forgotPassword';
 import DashboardScreen from './pages/dashboard';
-import DashboardAnalyticsScreen from './pages/dashboard/analytics';
-import DashboardTransactionsScreen from './pages/dashboard/transactions';
+import DashboardAnalyticsScreen from './pages/dashboard/micro/index';
+import DashboardTransactionsScreen from './pages/dashboard/micro/index';
 import DashboardProfileScreen from './pages/dashboard/profile';
+import MandatoryPensionsTransactionsScreen from './pages/dashboard/mandotory-transactions';
 function App() {
   return (<BrowserRouter>
     <Routes>
@@ -18,8 +19,7 @@ function App() {
     path={CONSTANTS.Routes.Dashboard} element={<DashboardScreen />}
     errorElement={<DashboardAnalyticsScreen />}
     >
-    {/* <Route path={CONSTANTS.Routes.History} element={<TransactionHistoryScreen />} />
-    <Route path={CONSTANTS.Routes.Subscriptions} element={<SubscriptionScreen />} /> />*/}
+    <Route path={CONSTANTS.Routes.Mandatory} element={<MandatoryPensionsTransactionsScreen />} />
     <Route path={CONSTANTS.Routes.Profile} element={<DashboardProfileScreen />} />
     <Route path={CONSTANTS.Routes.History} element={<DashboardTransactionsScreen />}  /> 
     <Route path={""} element={<DashboardAnalyticsScreen />} />

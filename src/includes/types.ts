@@ -69,10 +69,14 @@ export interface ChartDataProps {
         lastName?:string;
         phoneNumber?:string;
         providerName?:string;
+        list?:string[];
+        confirmPassword?:""
     }
     export interface ItemProps {
         id:string;
         name:string;
         value:string;
         icon?:HTMLElement;
+        under?:string;
+        list?:string[];
     }

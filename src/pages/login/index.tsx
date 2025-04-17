@@ -34,7 +34,7 @@ export default function LoginScreen(prop:LoginScreenProp) {
       }
     })
   }
-  if(localStorage.getItem(CONSTANTS.Routes.Login))
+  if(localStorage.getItem(CONSTANTS.LOCALSTORAGE.token))
     {
      return <Navigate to={"/"+CONSTANTS.Routes.Dashboard} />
     }

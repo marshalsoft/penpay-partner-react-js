@@ -48,8 +48,8 @@ export const DashboardProfileScreen = () => {
  
   const GetProfile = ()=>{
     setLoading(true);
-    PostRequest("get:partner-get-profile",{}).then((res)=>{
-      if(res.status)
+    PostRequest("get:user-details",{}).then((res)=>{
+        if(res.status)
       {
         setUserData(res.data);
       }
@@ -59,7 +59,18 @@ export const DashboardProfileScreen = () => {
   useEffect(()=>{
     GetProfile();
   },[])
- 
+ const HandleProfileUpdate = (e:FormEvent)=>{
+    e.preventDefault()
+    setLoading(true);
+    PostRequest("post:user-update_user_details",{
+        phoneNumber:user.phoneNumber
+    }).then((res)=>{
+        if(res.status)
+      {
+        setUserData(res.data);
+      }
+    })
+ }
   return (
     <div className='p-3'>
       <BreadCrumb 
@@ -73,23 +84,23 @@ export const DashboardProfileScreen = () => {
 <div className="row">
             <div className="col-12">
                 <div className="row">
-                    <div className="col-7 ">
+                    <div className="col-10">
                     <div className="d-flex">
                             <div className="gap-2">
                                 <div className="text-center">
-       {!user.avatar?<div className="feature-icon bg-success bg-gradient">
+    <div className="feature-icon bg-success bg-gradient">
      <UserIcon
      size={30}
      />
-     </div>:<img src={user?.avatar} alt="Avatar" className="avatar-x" />}
+     </div>
                                 </div>
                                 <div className="text-center">
-                                    <button
+                                    {/* <button
                                         type="submit"
                                         // onClick={handleAvatarUpload}
                                         className="btn btn-outline-success mt-3"
                                         style={{ width: 93 }}
-                                    >Upload</button>
+                                    >Upload</button> */}
                                 </div>
                             </div>
                             <div >
@@ -97,7 +108,7 @@ export const DashboardProfileScreen = () => {
                             </div>
                             <div >
                                 <div className="card-body">
-                                    <h5 className="card-title"><b>{user?.providerName}</b></h5>
+                                    <h5 className="card-title"><b>{user?.firstName}</b></h5>
                                     <p className="card-text">
                                         <b>Email: </b>{user?.email}</p>
                                     <p className="card-text">
@@ -110,7 +121,7 @@ export const DashboardProfileScreen = () => {
                         </div>
                         <hr className="divider" />
                         <form
-                        //    onSubmit={HandleProfileUpdate}
+                        onSubmit={HandleProfileUpdate}
                         >
                             <div className="card p-4 mb-3">
                                 {/* <div className="mb-3">
@@ -137,10 +148,10 @@ export const DashboardProfileScreen = () => {
                                         label={`Alternative phone number`}
                                         value={user.secondaryPhoneNumber!}
                                         onValueChange={(d) => {
-                                            // setFormUpdateData({
-                                            //     ...formUpdateData,
-                                            //     secondaryPhoneNumber: d.value
-                                            // })
+                                            setUserData({
+                                                ...user,
+                                                secondaryPhoneNumber: d.value
+                                            })
                                         }}
                                         required
                                         id='alternativePhoneNumber'
@@ -174,10 +185,10 @@ export const DashboardProfileScreen = () => {
                                         label={`Current Password`}
                                         value={String(user?.currentPasword)}
                                         onValueChange={(d) => {
-                                            // setPasswordFormData({
-                                            //     ...passwordData,
-                                            //     currentPasword: d.value
-                                            // })
+                                            setUserData({
+                                                ...user,
+                                                currentPasword: d.value
+                                            })
                                         }}
                                         required
                                         id='currentPassword'
@@ -194,10 +205,10 @@ export const DashboardProfileScreen = () => {
                                         label={`New Password`}
                                         value={user?.newPassword!}
                                         onValueChange={(d) => {
-                                            // setPasswordFormData({
-                                            //     ...passwordData,
-                                            //     newPassword: d.value
-                                            // })
+                                            setUserData({
+                                                ...user,
+                                                newPassword: d.value
+                                            })
                                         }}
                                         required
                                         id='newPassword'
@@ -215,12 +226,12 @@ export const DashboardProfileScreen = () => {
                                         className="btn btn-success mt-3"
                                         style={{ width: 123 }}
                                     >
-                                        <span className="ms-2">Proceed</span></button>
+                                    <span className="ms-2">Proceed</span></button>
                                 </div>
                             </div>
                         </form>
                     </div>
-                    <div className="col-5">
+                    {/* <div className="col-5">
                         
                         <div className="page-title">Settings</div>
                         <div className="list-group mb-3">
@@ -366,7 +377,7 @@ export const DashboardProfileScreen = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
