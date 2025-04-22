@@ -1,5 +1,5 @@
 export const GetDevEnvironment = ()=>{
-  return "https://prod.penpay.com.ng/v1/"// String(window.location.hostname).includes("localhost")?"http://localhost/penpay-api/v1/":String(window.location.hostname).includes("test")?"https://test.penpay.com.ng/v1/":"https://prod.penpay.com.ng/v1/"
+  return "http://localhost/penpay-api/v1/"// String(window.location.hostname).includes("localhost")?"http://localhost/penpay-api/v1/":String(window.location.hostname).includes("test")?"https://test.penpay.com.ng/v1/":"https://prod.penpay.com.ng/v1/"
 }
 export const CONSTANTS = {
     BaseURL:GetDevEnvironment(),
